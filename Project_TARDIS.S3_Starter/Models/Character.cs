@@ -17,17 +17,18 @@ namespace Project_TARDIS
         {
             None,
             Human,
-            Thorian,
-            Xantorian
+            Betazoid,
+            Vulcan
         }
 
         #endregion
 
         #region FIELDS
-
+        
         private string _name;
-        private int _spaceTimeLocationID;
+        private int _shipLocationID;
         private RaceType _race;
+
 
         #endregion
 
@@ -40,10 +41,11 @@ namespace Project_TARDIS
             set { _name = value; }
         }
 
+
         public int SpaceTimeLocationID
         {
-            get { return _spaceTimeLocationID; }
-            set { _spaceTimeLocationID = value; }
+            get { return _shipLocationID; }
+            set { _shipLocationID = value; }
         }
 
         public RaceType Race
@@ -54,7 +56,6 @@ namespace Project_TARDIS
 
         #endregion
 
-
         #region CONSTRUCTORS
 
         public Character()
@@ -64,9 +65,9 @@ namespace Project_TARDIS
 
         public Character(string name, RaceType race, int spaceTimeLocationID)
         {
-            _name = name;
-            _race = race;
-            _spaceTimeLocationID = spaceTimeLocationID;
+            Name = name;
+            Race = race;
+            SpaceTimeLocationID = spaceTimeLocationID;
         }
 
         #endregion

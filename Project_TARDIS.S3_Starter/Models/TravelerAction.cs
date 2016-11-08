@@ -19,6 +19,7 @@
         ListTreasures,
         Yes,
         No,
+        TalkTo,
         Exit
     }
 }

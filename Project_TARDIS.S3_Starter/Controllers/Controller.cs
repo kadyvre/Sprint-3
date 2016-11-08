@@ -18,8 +18,9 @@ namespace Project_TARDIS
         //        are not accessed outside of the controller
         //
         private ConsoleView _gameConsoleView;
-        private Traveler _gameTraveler;
-        private Universe _gameUniverse;
+        private Player _gameTraveler;
+        private Ship _gameUniverse;
+        private Knights _gameKnights;
 
         #endregion
 
@@ -37,12 +38,13 @@ namespace Project_TARDIS
             //
             // instantiate a Salesperson object
             //
-            _gameTraveler = new Traveler();
+            _gameTraveler = new Player();
+            _gameKnights = new Knights();
 
             //
             // instantiate a ConsoleView object
             //
-            _gameConsoleView = new ConsoleView(_gameTraveler, _gameUniverse);
+            _gameConsoleView = new ConsoleView(_gameTraveler, _gameUniverse, _gameKnights);
 
             //
             // begins running the application UI
@@ -60,9 +62,9 @@ namespace Project_TARDIS
         private void InitializeGame()
         {
             _usingGame = true;
-            _gameUniverse = new Universe();
-            _gameTraveler = new Traveler();
-            _gameConsoleView = new ConsoleView(_gameTraveler, _gameUniverse);
+            _gameUniverse = new Ship();
+            _gameTraveler = new Player();
+            _gameConsoleView = new ConsoleView(_gameTraveler, _gameUniverse, _gameKnights);
 
         }
 
@@ -109,7 +111,7 @@ namespace Project_TARDIS
                         Item itemToPickup = _gameUniverse.GetItemtByID(itemID);
 
                         itemToPickup.SpaceTimeLocationID = 0;
-                        _gameTraveler.TravelersItems.Add(itemToPickup);
+                        _gameTraveler.PlayersItems.Add(itemToPickup);
                         break;
                     case TravelerAction.PickUpTreasure:
                         treasureID = _gameConsoleView.DisplayPickUpTreasure();
@@ -117,8 +119,7 @@ namespace Project_TARDIS
                         Treasure treasureToPickup = _gameUniverse.GetTreasureByID(treasureID);
 
                         treasureToPickup.SpaceTimeLocationID = 0;
-                        _gameTraveler.TravelersTreasures.Add(treasureToPickup);
-                        break;
+                        _gameTraveler.PlayersTreasures.Add(treasureToPickup);
                         break;
                     case TravelerAction.PutDownItem:
                         itemID = _gameConsoleView.DisplayPutDownItem();
@@ -126,7 +127,7 @@ namespace Project_TARDIS
                         Item itemToPutDown = _gameUniverse.GetItemtByID(itemID);
 
                         itemToPutDown.SpaceTimeLocationID = _gameTraveler.SpaceTimeLocationID;
-                        _gameTraveler.TravelersItems.Remove(itemToPutDown);
+                        _gameTraveler.PlayersItems.Remove(itemToPutDown);
                         break;
                     case TravelerAction.PutDownTreasure:
                         treasureID = _gameConsoleView.DisplayPutDownTreasure();
@@ -134,10 +135,10 @@ namespace Project_TARDIS
                         Treasure treasureToPutDown = _gameUniverse.GetTreasureByID(treasureID);
 
                         treasureToPutDown.SpaceTimeLocationID = _gameTraveler.SpaceTimeLocationID;
-                        _gameTraveler.TravelersTreasures.Remove(treasureToPutDown);
+                        _gameTraveler.PlayersTreasures.Remove(treasureToPutDown);
                         break;
                     case TravelerAction.Travel:
-                        _gameTraveler.SpaceTimeLocationID = _gameConsoleView.DisplayGetTravelersNewDestination().SpaceTimeLocationID;
+                        _gameTraveler.SpaceTimeLocationID = _gameConsoleView.DisplayGetTravelersNewDestination().ShipLocationID;
                         break;
                     case TravelerAction.TravelerInfo:
                         _gameConsoleView.DisplayTravelerInfo();
@@ -181,7 +182,7 @@ namespace Project_TARDIS
             _gameConsoleView.DisplayMissionSetupIntro();
             _gameTraveler.Name = _gameConsoleView.DisplayGetTravelersName();
             _gameTraveler.Race = _gameConsoleView.DisplayGetTravelersRace();
-            _gameTraveler.SpaceTimeLocationID = _gameConsoleView.DisplayGetTravelersNewDestination().SpaceTimeLocationID;
+            _gameTraveler.SpaceTimeLocationID = _gameConsoleView.DisplayGetTravelersNewDestination().ShipLocationID;
 
             // 
             // add initial items to the traveler's inventory
@@ -201,7 +202,7 @@ namespace Project_TARDIS
             item = _gameUniverse.GetItemtByID(itemID);
             item.SpaceTimeLocationID = 0;
 
-            _gameTraveler.TravelersItems.Add(item);
+            _gameTraveler.PlayersItems.Add(item);
         }
 
         /// <summary>
@@ -215,7 +216,7 @@ namespace Project_TARDIS
             item = _gameUniverse.GetTreasureByID(itemID);
             item.SpaceTimeLocationID = 0;
 
-            _gameTraveler.TravelersTreasures.Add(item);
+            _gameTraveler.PlayersTreasures.Add(item);
         }
 
         #endregion
