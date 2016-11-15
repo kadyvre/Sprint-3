@@ -20,7 +20,7 @@ namespace Project_TARDIS
 
         public abstract string Description { get; set; }
 
-        public abstract int SpaceTimeLocationID { get; set; }
+        public abstract int ShipLocationID { get; set; }
 
         public abstract bool HasValue { get; set; }
 

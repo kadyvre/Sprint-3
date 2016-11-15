@@ -42,7 +42,7 @@ namespace Project_TARDIS
             _playersTreasures = new List<Treasure>();
         }
 
-        public Player(string name, RaceType race, int spaceTimeLocationID) : base(name, race, spaceTimeLocationID)
+        public Player(string name, RaceType race, int shipLocationID) : base(name, race, shipLocationID)
         {
 
         }

@@ -14,7 +14,7 @@ namespace Project_TARDIS
 
         public override string Description { get; set; }
 
-        public override int SpaceTimeLocationID { get; set; }
+        public override int ShipLocationID { get; set; }
 
         public override bool HasValue { get; set; }
 

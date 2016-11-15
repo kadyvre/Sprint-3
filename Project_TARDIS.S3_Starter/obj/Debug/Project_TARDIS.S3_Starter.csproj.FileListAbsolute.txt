@@ -4,3 +4,9 @@ C:\Users\holm6\Downloads\Project_TARDIS.S3_Starter\bin\Debug\$safeprojectname$.p
 C:\Users\holm6\Downloads\Project_TARDIS.S3_Starter\obj\Debug\Project_TARDIS.S3_Starter.csprojResolveAssemblyReference.cache
 C:\Users\holm6\Downloads\Project_TARDIS.S3_Starter\obj\Debug\$safeprojectname$.exe
 C:\Users\holm6\Downloads\Project_TARDIS.S3_Starter\obj\Debug\$safeprojectname$.pdb
+C:\Users\holm6\Desktop\Project_TARDIS.S3_Starter\bin\Debug\$safeprojectname$.exe.config
+C:\Users\holm6\Desktop\Project_TARDIS.S3_Starter\obj\Debug\$safeprojectname$.exe
+C:\Users\holm6\Desktop\Project_TARDIS.S3_Starter\obj\Debug\$safeprojectname$.pdb
+C:\Users\holm6\Desktop\Project_TARDIS.S3_Starter\obj\Debug\Project_TARDIS.S3_Starter.csprojResolveAssemblyReference.cache
+C:\Users\holm6\Desktop\Project_TARDIS.S3_Starter\bin\Debug\$safeprojectname$.exe
+C:\Users\holm6\Desktop\Project_TARDIS.S3_Starter\bin\Debug\$safeprojectname$.pdb

@@ -42,7 +42,7 @@ namespace Project_TARDIS
         }
 
 
-        public int SpaceTimeLocationID
+        public int ShipLocationID
         {
             get { return _shipLocationID; }
             set { _shipLocationID = value; }
@@ -63,11 +63,11 @@ namespace Project_TARDIS
 
         }
 
-        public Character(string name, RaceType race, int spaceTimeLocationID)
+        public Character(string name, RaceType race, int shipLocationID)
         {
             Name = name;
             Race = race;
-            SpaceTimeLocationID = spaceTimeLocationID;
+            ShipLocationID = shipLocationID;
         }
 
         #endregion

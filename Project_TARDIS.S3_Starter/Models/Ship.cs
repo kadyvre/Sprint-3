@@ -28,7 +28,7 @@ namespace Project_TARDIS
         // list of all treasure
         //
         public List<Treasure> Treasures { get; set; }
-        public Knights Knights { get; set; }
+        public List<Knights> Knight { get; set; }
 
         #endregion
 
@@ -45,12 +45,12 @@ namespace Project_TARDIS
             this.ShipLocations = new List<ShipLocation>();
             this.Items = new List<Item>();
             this.Treasures = new List<Treasure>();
-            this.Knights = new Knights();
+            this.Knight = new List<Knights>();
 
             //
             // add all of the space-time locations and game objects to their lists
             // 
-            IntializeUniverseSpaceTimeLocations();
+            IntializeUniverseShipLocations();
             IntializeUniverseItems();
             IntializeUniverseTreasures();
             InitializeUniverseKnights();
@@ -126,7 +126,7 @@ namespace Project_TARDIS
         /// </summary>
         /// <param name="ID">space-time location ID</param>
         /// <returns>requested space-time location</returns>
-        public ShipLocation GetSpaceTimeLocationByID(int ID)
+        public ShipLocation GetShipLocationByID(int ID)
         {
             ShipLocation spt = null;
 
@@ -187,18 +187,18 @@ namespace Project_TARDIS
             return requestedItem;
         }
 
-        public Knight GetKnightByID(int ID)
+        public Knights GetKnightByID(int ID)
         {
-            Knight requestedKnight = null;
+            Knights requestedKnight = null;
 
             //
             // run through the item list and grab the correct one
             //
-            foreach (Knight knight in Knights)
+            foreach (Knights knight in Knight)
             {
                 if (knight.CharacterID == ID)
                 {
-                    requestedknight = knight;
+                    requestedKnight = knight;
                 }
             }
 
@@ -256,11 +256,11 @@ namespace Project_TARDIS
         /// </summary>
         /// <param name="ID">space-time location ID</param>
         /// <returns>list of items in the specified location</returns>
-        public List<Item> GetItemtsBySpaceTimeLocationID(int ID)
+        public List<Item> GetItemtsByShipLocationID(int ID)
         {
             // TODO validate ShipLocationID
 
-            List<Item> itemsInSpaceTimeLocation = new List<Item>();
+            List<Item> itemsInShipLocation = new List<Item>();
 
             //
             // run through the item list and put all items in the current location
@@ -268,24 +268,25 @@ namespace Project_TARDIS
             //
             foreach (Item item in Items)
             {
-                if (item.SpaceTimeLocationID == ID)
+                if (item.ShipLocationID == ID)
                 {
-                    itemsInSpaceTimeLocation.Add(item);
+                    itemsInShipLocation.Add(item);
                 }
             }
 
-            return itemsInSpaceTimeLocation;
+            return itemsInShipLocation;
         }
+
 
         /// get a list of treasures using a space-time location ID
         /// </summary>
         /// <param name="ID">space-time location ID</param>
         /// <returns>list of treasures in the specified location</returns>
-        public List<Treasure> GetTreasuresBySpaceTimeLocationID(int ID)
+        public List<Treasure> GetTreasuresByShipLocationID(int ID)
         {
             // TODO validate ShipLocationID
 
-            List<Treasure> treasuresInSpaceTimeLocation = new List<Treasure>();
+            List<Treasure> treasuresInShipLocation = new List<Treasure>();
 
             //
             // run through the treasure list and put all items in the current location
@@ -293,15 +294,35 @@ namespace Project_TARDIS
             //
             foreach (Treasure treasure in Treasures)
             {
-                if (treasure.SpaceTimeLocationID == ID)
+                if (treasure.ShipLocationID == ID)
                 {
-                    treasuresInSpaceTimeLocation.Add(treasure);
+                    treasuresInShipLocation.Add(treasure);
                 }
             }
 
-            return treasuresInSpaceTimeLocation;
+            return treasuresInShipLocation;
         }
 
+        public List<Knights> GetKnightsByShipLocationID(int ID)
+        {
+            // TODO validate ShipLocationID
+
+            List<Knights> knightsInShipLocation = new List<Knights>();
+
+            //
+            // run through the treasure list and put all items in the current location
+            // into a list
+            //
+            foreach (Knights knight in Knight)
+            {
+                if (knight.ShipLocationID == ID)
+                {
+                    knightsInShipLocation.Add(knight);
+                }
+            }
+
+            return knightsInShipLocation;
+        }
         #endregion
 
         #region ***** define methods to initialize all game elements *****
@@ -309,34 +330,33 @@ namespace Project_TARDIS
         /// <summary>
         /// initialize the universe with all of the space-time locations
         /// </summary>
-        private void IntializeUniverseSpaceTimeLocations()
+        private void IntializeUniverseShipLocations()
         {
             ShipLocations.Add(new ShipLocation
             {
-                Name = "TARDIS Base",
+                Name = "Bridge",
                 ShipLocationID = 1,
-                Description = "The Norlon Corporation's secret laboratory located deep underground, " +
-                              " beneath a nondescript 7-11 on the south-side of Toledo, OH.",
+                Description = "USS Desires bridge, Located at the heart of the ship for maximum safety" +
+                              "Captain Turk and Commander J.D. stare off into the distance seemingly lost in thought.",
                 Accessable = true
             });
 
             ShipLocations.Add(new ShipLocation
             {
-                Name = "Xantoria Market",
+                Name = "Ten Forward",
                 ShipLocationID = 2,
-                Description = "The Xantoria market, once controlled by the Thorian elite, is now an " +
-                              "open market managed by the Xantorian Commerce Coop. It is a place " +
-                              "where many races from various systems trade goods.",
+                Description = "Ten Forward is the ship's cafeteria " +
+                              "Personell gather here for social events or just to enjoy a meal.",
                 Accessable = true
             });
 
             ShipLocations.Add(new ShipLocation
             {
-                Name = "Felandrian Plains",
+                Name = "Holodeck",
                 ShipLocationID = 3,
-                Description = "The Felandrian Plains are a common destination for tourist. " +
-                  "Located just north of the equatorial line on the planet of Corlon, they" +
-                  "provide excellent habitat for a rich ecosystem of flora and fauna.",
+                Description = "The Holodeck is a large holographice simulator. " +
+                  "Personell come here to unwind and run simulations, it" +
+                  "is capable of producing 'Hard-Light' replicas as well as physical replicas.",
                 Accessable = true
             });
         }
@@ -348,10 +368,10 @@ namespace Project_TARDIS
         {
             Items.Add(new Item
             {
-                Name = "Key",
+                Name = "Keycard",
                 GameObjectID = 1,
-                Description = "A gold encrusted chest with strange markings lay next to a strange blue rock.",
-                SpaceTimeLocationID = 3,
+                Description = "A Federation keycard, it belongs to Lieutenant Jensen.",
+                ShipLocationID = 3,
                 HasValue = false,
                 Value = 0,
                 CanAddToInventory = true
@@ -362,7 +382,7 @@ namespace Project_TARDIS
                 Name = "Mirror",
                 GameObjectID = 2,
                 Description = "A full sized mirror with jewels decorating the border.",
-                SpaceTimeLocationID = 2,
+                ShipLocationID = 2,
                 HasValue = false,
                 Value = 0,
                 CanAddToInventory = false
@@ -370,10 +390,10 @@ namespace Project_TARDIS
 
             Items.Add(new Item
             {
-                Name = "Encabulator",
+                Name = "Tricorder",
                 GameObjectID = 3,
-                Description = "A multi-function device carried by all Time Lords.",
-                SpaceTimeLocationID = 0,
+                Description = "A device carried by federation personell, it is a multi-functionality scanning device.",
+                ShipLocationID = 0,
                 HasValue = true,
                 Value = 500,
                 CanAddToInventory = true
@@ -391,7 +411,7 @@ namespace Project_TARDIS
                 TreasureType = Treasure.Type.Ruby,
                 GameObjectID = 1,
                 Description = "A deep red ruby the size of an egg.",
-                SpaceTimeLocationID = 2,
+                ShipLocationID = 2,
                 HasValue = true,
                 Value = 25,
                 CanAddToInventory = true
@@ -403,7 +423,7 @@ namespace Project_TARDIS
                 TreasureType = Treasure.Type.Lodestone,
                 GameObjectID = 2,
                 Description = "A deep red ruby the size of an egg.",
-                SpaceTimeLocationID = 3,
+                ShipLocationID = 3,
                 HasValue = true,
                 Value = 15,
                 CanAddToInventory = true
@@ -412,13 +432,13 @@ namespace Project_TARDIS
 
         private void InitializeUniverseKnights()
         {
-            Knights.Equals(new Knights
+            Knight.Add(new Knights
             {
                 Name = "Knight Frederic",
                 CharacterID = 1,
                 Description = "A tall, imposing knight. He doesn't look particularly friendly...",
                 Talk = "Bring me a shrubbery or I shall say 'NI!'",
-                SpaceTimeLocationID = 3,
+                ShipLocationID = 3,
             });
         }
         #endregion

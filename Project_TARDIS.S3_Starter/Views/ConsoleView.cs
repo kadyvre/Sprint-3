@@ -340,7 +340,7 @@ namespace Project_TARDIS
 
                     try
                     {
-                        nextSpaceTimeLocation = _gameUniverse.GetSpaceTimeLocationByID(locationID);
+                        nextSpaceTimeLocation = _gameUniverse.GetShipLocationByID(locationID);
 
                         ConsoleUtil.DisplayReset();
                         ConsoleUtil.DisplayMessage($"You have indicated {nextSpaceTimeLocation.Name} as your TARDIS destination.");
@@ -422,6 +422,22 @@ namespace Project_TARDIS
             }
         }
 
+        public void DisplayKnightTable(List<Knights> knights)
+        {
+            //
+            // table headings
+            //
+            ConsoleUtil.DisplayMessage("ID".PadRight(10) + "Name".PadRight(20));
+            ConsoleUtil.DisplayMessage("---".PadRight(10) + "-------------".PadRight(20));
+
+            //
+            // item name and id
+            //
+            foreach (Knights knight in knights)
+            {
+                ConsoleUtil.DisplayMessage(knight.CharacterID.ToString().PadRight(10) + knight.Name.PadRight(20));
+            }
+        }
         /// <summary>
         /// generate a table of treasure names and ids
         /// </summary>
@@ -503,6 +519,10 @@ namespace Project_TARDIS
                     case 'A':
                     case 'a':
                         travelerActionChoice = TravelerAction.LookAround;
+                        if (_gameTraveler.ShipLocationID == _gameKnights.ShipLocationID)
+                        {
+                            travelerActionChoice = TravelerAction.TalkTo;
+                        }
                         usingMenu = false;
                         break;
                     case 'B':
@@ -596,22 +616,28 @@ namespace Project_TARDIS
             ConsoleUtil.HeaderText = "Current Space-Time Location Info";
             ConsoleUtil.DisplayReset();
 
-            ConsoleUtil.DisplayMessage(_gameUniverse.GetSpaceTimeLocationByID(_gameTraveler.SpaceTimeLocationID).Description);
+            ConsoleUtil.DisplayMessage(_gameUniverse.GetShipLocationByID(_gameTraveler.ShipLocationID).Description);
 
             ConsoleUtil.DisplayMessage("");
             ConsoleUtil.DisplayMessage("Items in current location.");
-            foreach (Item item in _gameUniverse.GetItemtsBySpaceTimeLocationID(_gameTraveler.SpaceTimeLocationID))
+            foreach (Item item in _gameUniverse.GetItemtsByShipLocationID(_gameTraveler.ShipLocationID))
             {
                 ConsoleUtil.DisplayMessage(item.Name + " - " + item.Description);
             }
 
             ConsoleUtil.DisplayMessage("");
             ConsoleUtil.DisplayMessage("Treasures in current location.");
-            foreach (Treasure treasure in _gameUniverse.GetTreasuresBySpaceTimeLocationID(_gameTraveler.SpaceTimeLocationID))
+            foreach (Treasure treasure in _gameUniverse.GetTreasuresByShipLocationID(_gameTraveler.ShipLocationID))
             {
                 ConsoleUtil.DisplayMessage(treasure.Name + " - " + treasure.Description);
             }
 
+            ConsoleUtil.DisplayMessage("");
+            ConsoleUtil.DisplayMessage("Characters in current location.");
+            foreach (Knights knight in _gameUniverse.GetKnightsByShipLocationID(_gameTraveler.ShipLocationID))
+            {
+                ConsoleUtil.DisplayMessage(knight.Name + " - " + knight.Description);
+            }
             DisplayContinuePrompt();
         }
 
@@ -620,21 +646,25 @@ namespace Project_TARDIS
         /// </summary>
         public void DisplayLookAt()
         {
-            int currentSptID = _gameTraveler.SpaceTimeLocationID;
+            bool usingMenu = false;
+            bool yes = false;
+
+            int currentSptID = _gameTraveler.ShipLocationID;
             List<Item> itemsInSpt = new List<Item>();
             List<Treasure> treasuresInSpt = new List<Treasure>();
+            List<Knights> knightsInSpt = new List<Knights>();
             Item itemToLookAt = new Item();
             Treasure treasureToLookAt = new Treasure();
             Knights knightToLookAt = new Knights();
 
-            itemsInSpt = _gameUniverse.GetItemtsBySpaceTimeLocationID(currentSptID);
-            treasuresInSpt = _gameUniverse.GetTreasuresBySpaceTimeLocationID(currentSptID);
-            knightsInSpt = _gameUniverse.GetKnightsBySpaceTimeLocationID(currentSptID);
+            itemsInSpt = _gameUniverse.GetItemtsByShipLocationID(currentSptID);
+            treasuresInSpt = _gameUniverse.GetTreasuresByShipLocationID(currentSptID);
+            knightsInSpt = _gameUniverse.GetKnightsByShipLocationID(currentSptID);
 
-            ConsoleUtil.HeaderText = "Look at a Game Items in Current Location";
+            ConsoleUtil.HeaderText = "Look at a Game Item in Current Location";
             ConsoleUtil.DisplayReset();
 
-            ConsoleUtil.DisplayMessage(_gameUniverse.GetSpaceTimeLocationByID(currentSptID).Name);
+            ConsoleUtil.DisplayMessage(_gameUniverse.GetShipLocationByID(currentSptID).Name);
 
             if (itemsInSpt != null)
             {
@@ -642,9 +672,8 @@ namespace Project_TARDIS
                 ConsoleUtil.DisplayMessage("Items in current location.");
                 DisplayItemTable(itemsInSpt);
 
-                ConsoleUtil.DisplayPromptMessage(
-                    "Enter the item number to view or press the Enter key to move on. "
-                    ); // TODO code in validation
+                ConsoleUtil.DisplayPromptMessage("Enter the item number to view or press the Enter key to move on. ");
+                Console.WriteLine("");
                 int itemIDChoice;
 
                 if (int.TryParse(Console.ReadLine(), out itemIDChoice))
@@ -658,6 +687,9 @@ namespace Project_TARDIS
 
             if (treasuresInSpt != null)
             {
+                ConsoleUtil.HeaderText = "Look at a treasure in current location";
+                ConsoleUtil.DisplayReset();
+
                 ConsoleUtil.DisplayMessage("");
                 ConsoleUtil.DisplayMessage("Treasures in current location.");
                 DisplayTreasureTable(treasuresInSpt);
@@ -665,12 +697,97 @@ namespace Project_TARDIS
                 ConsoleUtil.DisplayPromptMessage(
                     "Enter the treasure number to view or press the Enter key to move on. "
                     ); // TODO code in validation
+                Console.WriteLine();
                 int treasureIDChoice;
 
                 if (int.TryParse(Console.ReadLine(), out treasureIDChoice))
                 {
                     treasureToLookAt = _gameUniverse.GetTreasureByID(treasureIDChoice);
                     ConsoleUtil.DisplayMessage(treasureToLookAt.Description);
+
+                    DisplayContinuePrompt();
+                }
+
+                if (knightsInSpt != null)
+                {
+                    ConsoleUtil.HeaderText = "Look at a Character in current location";
+                    ConsoleUtil.DisplayReset();
+
+                    ConsoleUtil.DisplayMessage("");
+                    ConsoleUtil.DisplayMessage("Characters in current location.");
+                    DisplayKnightTable(knightsInSpt);
+
+                    TravelerAction travelerActionChoice = TravelerAction.None;
+
+                    ConsoleUtil.DisplayMessage("Would you like to speak to him? ('y' for yes, 'n' for no)");
+                    usingMenu = true;
+
+                    while (usingMenu == true)
+                    {
+                        ConsoleKeyInfo userResponse = Console.ReadKey(true);
+                        switch (userResponse.KeyChar)
+                        {
+                            case 'Y':
+                            case 'y':
+                                travelerActionChoice = TravelerAction.Yes;
+                                usingMenu = false;
+                                yes = true;
+                                break;
+                            case 'N':
+                            case 'n':
+                                travelerActionChoice = TravelerAction.No;
+                                yes = false;
+                                usingMenu = false;
+                                break;
+                        }
+                    }
+
+                    while (yes == true)
+                    {
+                        ConsoleUtil.DisplayPromptMessage("Enter the character ID to talk to, or press the Enter key to move on. ");
+                        Console.WriteLine("");
+                        ConsoleUtil.DisplayPromptMessage("Character ID:");
+                        int itemIDChoice;
+
+                        if (int.TryParse(Console.ReadLine(), out itemIDChoice))
+                        {
+                            knightToLookAt = _gameUniverse.GetKnightByID(itemIDChoice);
+                            ConsoleUtil.DisplayMessage(knightToLookAt.Talk);                           
+                        }
+                        yes = false;
+                    }
+                    DisplayContinuePrompt();
+                }
+            }
+        }
+
+        public void DisplayTalkTo()
+        {
+            int currentSptID = _gameTraveler.ShipLocationID;
+            List<Knights> knightsInSpt = new List<Knights>();
+            Knights knightToLookAt = new Knights();
+
+            knightsInSpt = _gameUniverse.GetKnightsByShipLocationID(currentSptID);
+
+            ConsoleUtil.HeaderText = "Talk to a Character in Current Location";
+            ConsoleUtil.DisplayReset();
+
+            ConsoleUtil.DisplayMessage(_gameUniverse.GetShipLocationByID(currentSptID).Name);
+
+            if (knightsInSpt != null)
+            {
+                ConsoleUtil.DisplayMessage("");
+                ConsoleUtil.DisplayMessage("Characters in current location.");
+                DisplayKnightTable(knightsInSpt);
+
+                ConsoleUtil.DisplayPromptMessage("Enter the character ID to talk to, or press the Enter key to move on. ");
+                Console.WriteLine("");
+                int itemIDChoice;
+
+                if (int.TryParse(Console.ReadLine(), out itemIDChoice))
+                {
+                    knightToLookAt = _gameUniverse.GetKnightByID(itemIDChoice);
+                    ConsoleUtil.DisplayMessage(knightToLookAt.Talk);
 
                     DisplayContinuePrompt();
                 }
@@ -714,9 +831,9 @@ namespace Project_TARDIS
                 //
                 // all treasure in the traveler's inventory have a ShipLocationID of 0
                 //
-                if (item.SpaceTimeLocationID != 0)
+                if (item.ShipLocationID != 0)
                 {
-                    ConsoleUtil.DisplayMessage("Location: " + _gameUniverse.GetSpaceTimeLocationByID(item.SpaceTimeLocationID).Name);
+                    ConsoleUtil.DisplayMessage("Location: " + _gameUniverse.GetShipLocationByID(item.ShipLocationID).Name);
                 }
                 else
                 {
@@ -749,9 +866,9 @@ namespace Project_TARDIS
                 //
                 // all treasure in the traveler's inventory have a ShipLocationID of 0
                 //
-                if (treasure.SpaceTimeLocationID != 0)
+                if (treasure.ShipLocationID != 0)
                 {
-                    ConsoleUtil.DisplayMessage("Location: " + _gameUniverse.GetSpaceTimeLocationByID(treasure.SpaceTimeLocationID).Name);
+                    ConsoleUtil.DisplayMessage("Location: " + _gameUniverse.GetShipLocationByID(treasure.ShipLocationID).Name);
                 }
                 else
                 {
@@ -778,8 +895,8 @@ namespace Project_TARDIS
             ConsoleUtil.DisplayMessage("");
             ConsoleUtil.DisplayMessage($"Player's Race: {_gameTraveler.Race}");
             ConsoleUtil.DisplayMessage("");
-            string spaceTimeLocationName = _gameUniverse.GetSpaceTimeLocationByID(_gameTraveler.SpaceTimeLocationID).Name;
-            ConsoleUtil.DisplayMessage($"Player's Current Location: {spaceTimeLocationName}");
+            string shipLocationName = _gameUniverse.GetShipLocationByID(_gameTraveler.ShipLocationID).Name;
+            ConsoleUtil.DisplayMessage($"Player's Current Location: {shipLocationName}");
 
             DisplayContinuePrompt();
         }
@@ -842,10 +959,10 @@ namespace Project_TARDIS
             int itemID = 0;
 
             int locationID;
-            locationID = _gameTraveler.SpaceTimeLocationID;
+            locationID = _gameTraveler.ShipLocationID;
 
             List<Item> itemsInCurrentLocation = new List<Item>();
-            itemsInCurrentLocation = _gameUniverse.GetItemtsBySpaceTimeLocationID(locationID);
+            itemsInCurrentLocation = _gameUniverse.GetItemtsByShipLocationID(locationID);
 
             ConsoleUtil.DisplayMessage("");
             ConsoleUtil.DisplayMessage("Items in current Location");
@@ -873,7 +990,7 @@ namespace Project_TARDIS
             int itemID = 0;
 
             int locationID;
-            locationID = _gameTraveler.SpaceTimeLocationID;
+            locationID = _gameTraveler.ShipLocationID;
 
             List<Item> itemsInInventory = new List<Item>();
             itemsInInventory = _gameTraveler.PlayersItems;
@@ -904,10 +1021,10 @@ namespace Project_TARDIS
             int treasureID = 0;
 
             int locationID;
-            locationID = _gameTraveler.SpaceTimeLocationID;
+            locationID = _gameTraveler.ShipLocationID;
 
             List<Treasure> treasuresInCurrentLocation = new List<Treasure>();
-            treasuresInCurrentLocation = _gameUniverse.GetTreasuresBySpaceTimeLocationID(locationID);
+            treasuresInCurrentLocation = _gameUniverse.GetTreasuresByShipLocationID(locationID);
 
             ConsoleUtil.DisplayMessage("");
             ConsoleUtil.DisplayMessage("Items in current Location");
@@ -935,7 +1052,7 @@ namespace Project_TARDIS
             int treasureID = 0;
 
             int locationID;
-            locationID = _gameTraveler.SpaceTimeLocationID;
+            locationID = _gameTraveler.ShipLocationID;
 
             List<Treasure> treasuresInInventory = new List<Treasure>();
             treasuresInInventory = _gameTraveler.PlayersTreasures;
